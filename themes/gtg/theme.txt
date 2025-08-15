@@ -19,7 +19,7 @@ terminal-border: "0"
   item_align = "center"
   height = 45%
   item_color = "#475a6b"
-  item_font = "pricedow"
+  item_font = "bankgothic"
   selected_item_color = "#a9c9ef"
   selected_item_align = "center"
   menu_pixmap_style = "menu_*.png"
