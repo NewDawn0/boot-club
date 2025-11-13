@@ -1,8 +1,7 @@
-{pkgs, ...}: let
-  theme-list = with builtins; attrNames (readDir ./themes);
-  themes = builtins.foldl' (xs: x: xs // {"${x}" = mkTheme x;}) {} theme-list;
+{pkgs}: let
+  allThemes = with builtins; readDir ./themes;
   mkTheme = name:
-    pkgs.stdenv.mkDerivation {
+    pkgs.stdenvNoCC.mkDerivation {
       inherit name;
       src = ./themes/${name};
       dontBuild = true;
@@ -14,4 +13,5 @@
         runHook postInstall
       '';
     };
-in {inherit themes theme-list;}
+in
+  pkgs.lib.mapAttrs (k: _: mkTheme k) allThemes

@@ -1,27 +1,31 @@
 {
-  description = "Grub-themes";
+  description = "Default flake template";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs?ref=25.05";
     utils = {
       url = "github:NewDawn0/nixUtils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
-  outputs = {
-    self,
-    utils,
-    ...
-  } @ inputs: {
-    overlays.default = final: prev: let
-      t = import ./themes.nix {pkgs = prev;};
-    in {
-      grubThemes = (prev.grubThemes or {}) // t.themes;
+  outputs = {utils, ...}: let
+    mkThemes = pkgs: import ./themes.nix {inherit pkgs;};
+  in {
+    checks = utils.lib.eachSystem {} (
+      p:
+        with p; {
+          deadnix = pkgs.runCommand "deadnix" {
+            nativeBuildInputs = [pkgs.deadnix];
+          } "deadnix --fail ${./.} && touch $out";
+        }
+    );
+    formatter = utils.lib.eachSystem {} (p: p.pkgs.alejandra);
+    overlays.default = _: prev: {
+      grub-themes = prev.grub-themes or {} // mkThemes prev;
     };
-    formatter.x86_64-linux = inputs.nixpkgs.legacyPackages.x86_64-linux.alejandra;
-    packages = utils.lib.eachSystem {} (pkgs: let
-      t = import ./themes.nix {inherit pkgs;};
-    in (t.themes // {default = t.themes.minegrub;}));
+    packages = utils.lib.eachSystem {} (p: let
+      themes = mkThemes p.pkgs;
+    in
+      themes);
   };
 }
