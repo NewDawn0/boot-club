@@ -21,7 +21,7 @@
     );
     formatter = utils.lib.eachSystem {} (p: p.pkgs.alejandra);
     overlays.default = _: prev: {
-      grub-themes = prev.grub-themes or {} // mkThemes prev;
+      grubThemes = prev.grubThemes or {} // mkThemes prev;
     };
     packages = utils.lib.eachSystem {} (p: let
       themes = mkThemes p.pkgs;
