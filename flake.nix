@@ -1,5 +1,5 @@
 {
-  description = "Default flake template";
+  description = "Grub themes collection for NixOS";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=25.05";
@@ -23,9 +23,11 @@
     overlays.default = _: prev: {
       grubThemes = prev.grubThemes or {} // mkThemes prev;
     };
-    packages = utils.lib.eachSystem {} (p: let
-      themes = mkThemes p.pkgs;
-    in
-      themes);
+    packages = utils.lib.eachSystem {} (
+      p: let
+        themes = mkThemes p.pkgs;
+      in
+        themes
+    );
   };
 }
