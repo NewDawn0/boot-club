@@ -2,11 +2,7 @@
   description = "Grub themes collection for NixOS";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs?ref=25.05";
-    utils = {
-      url = "github:NewDawn0/nixUtils";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    utils.url = "github:NewDawn0/nixUtils";
   };
   outputs = {utils, ...}: let
     mkThemes = pkgs: import ./themes.nix {inherit pkgs;};
@@ -18,7 +14,7 @@
             nativeBuildInputs = [pkgs.deadnix];
           } "deadnix --fail ${./.} && touch $out";
           typos = pkgs.runCommand "typos" {
-            nativeBuildInputs = [ pkgs.typos ];
+            nativeBuildInputs = [pkgs.typos];
           } "typos --format brief && touch $out";
         }
     );
